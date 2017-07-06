@@ -3,7 +3,7 @@
 ## Source: https://github.com/hexojs/hexo/
 
 # Site
-title: 胡说
+title: 随语
 subtitle:
 description: 蜗壳，沉重却是生命的归宿；<br>脚步，缓慢但从未止步不前。
 author: Stoner
@@ -12,7 +12,7 @@ timezone: Asia/Shanghai
 
 # URL
 ## If your site is put in a subdirectory, set url as 'http://yoursite.com/child' and root as '/child/'
-url: http://blog.snail-shell.studio
+url: https://blog.snail-shell.studio
 root: /
 permalink: :year/:month/:day/:title/
 permalink_defaults:
@@ -28,13 +28,13 @@ i18n_dir: :lang
 skip_render:
 
 # Writing
-new_post_name: :title.md # File name of new posts
+new_post_name: :year-:month-:day-:title.md # File name of new posts
 default_layout: post
 titlecase: false # Transform title into titlecase
 external_link: true # Open external links in new tab
 filename_case: 0
 render_drafts: false
-post_asset_folder: false
+post_asset_folder: true
 relative_link: false
 future: true
 highlight:
@@ -71,3 +71,10 @@ deploy:
   type: git
   repository: https://github.com/stoner30/stoner30.github.io.git
   branch: master
+
+# Search
+search:
+  path: search.xml
+  field: post
+  format: html
+  limit: 10000
