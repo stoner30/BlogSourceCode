@@ -1,0 +1,1207 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="原文链接  在 WWDC 2017 上，苹果公司发布了很多令开发者激动不已的框架和 API。在这些框架中，Core ML 无疑是最受关注的框架之一。利用 Core ML，你可将机器学习模型整合到应用中，但并不需要了解神经网络和机器学习的相关知识。另外，你可以使用一些预处理的数据模型，只要将其转换成 Core ML 的模型即可。为了演示，我们将使用苹果开发者网站所提供的 Core ML 模型。闲话">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Core ML 初体验：构建简单的图像识别应用">
+<meta property="og:url" content="https://blog.snail-shell.studio/2017/07/12/translation-coreml-introduction/index.html">
+<meta property="og:site_name" content="随语">
+<meta property="og:description" content="原文链接  在 WWDC 2017 上，苹果公司发布了很多令开发者激动不已的框架和 API。在这些框架中，Core ML 无疑是最受关注的框架之一。利用 Core ML，你可将机器学习模型整合到应用中，但并不需要了解神经网络和机器学习的相关知识。另外，你可以使用一些预处理的数据模型，只要将其转换成 Core ML 的模型即可。为了演示，我们将使用苹果开发者网站所提供的 Core ML 模型。闲话">
+<meta property="og:image" content="https://blog.snail-shell.studio/2017/07/12/translation-coreml-introduction/images/trained-model.png">
+<meta property="og:image" content="https://blog.snail-shell.studio/2017/07/12/translation-coreml-introduction/images/coreml-app-demo.png">
+<meta property="og:image" content="https://blog.snail-shell.studio/2017/07/12/translation-coreml-introduction/images/xcode9-new-proj.png">
+<meta property="og:image" content="https://blog.snail-shell.studio/2017/07/12/translation-coreml-introduction/images/pic3.png">
+<meta property="og:image" content="https://blog.snail-shell.studio/2017/07/12/translation-coreml-introduction/images/coreml-storyboard.png">
+<meta property="og:image" content="https://blog.snail-shell.studio/2017/07/12/translation-coreml-introduction/images/coreml-plist-privacy.png">
+<meta property="og:image" content="https://blog.snail-shell.studio/2017/07/12/translation-coreml-introduction/images/coreml-pretrained-model.png">
+<meta property="og:image" content="https://blog.snail-shell.studio/2017/07/12/translation-coreml-introduction/images/coreml-model-desc.png">
+<meta property="og:image" content="https://blog.snail-shell.studio/2017/07/12/translation-coreml-introduction/images/inceptionv3-class.png">
+<meta property="og:image" content="https://blog.snail-shell.studio/2017/07/12/translation-coreml-introduction/images/coreml-successful-case.jpg">
+<meta property="og:image" content="https://blog.snail-shell.studio/2017/07/12/translation-coreml-introduction/images/coreml-failed-case.jpg">
+<meta property="og:updated_time" content="2017-07-13T02:15:50.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Core ML 初体验：构建简单的图像识别应用">
+<meta name="twitter:description" content="原文链接  在 WWDC 2017 上，苹果公司发布了很多令开发者激动不已的框架和 API。在这些框架中，Core ML 无疑是最受关注的框架之一。利用 Core ML，你可将机器学习模型整合到应用中，但并不需要了解神经网络和机器学习的相关知识。另外，你可以使用一些预处理的数据模型，只要将其转换成 Core ML 的模型即可。为了演示，我们将使用苹果开发者网站所提供的 Core ML 模型。闲话">
+<meta name="twitter:image" content="https://blog.snail-shell.studio/2017/07/12/translation-coreml-introduction/images/trained-model.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://blog.snail-shell.studio/2017/07/12/translation-coreml-introduction/"/>
+
+
+
+
+
+  <title>Core ML 初体验：构建简单的图像识别应用 | 随语</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">随语</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://blog.snail-shell.studio/2017/07/12/translation-coreml-introduction/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Stoner">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://avatars3.githubusercontent.com/u/1787383?v=3&u=63a1e261c730210a371bbbd265f7a91727ca22b3&s=400">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="随语">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Core ML 初体验：构建简单的图像识别应用</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-07-12T08:45:22+08:00">
+                2017-07-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/译文/" itemprop="url" rel="index">
+                    <span itemprop="name">译文</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p><a href="https://www.appcoda.com/coreml-introduction" target="_blank" rel="external">原文链接</a></p>
+</blockquote>
+<p>在 WWDC 2017 上，苹果公司发布了很多令开发者激动不已的框架和 API。在这些框架中，Core ML 无疑是最受关注的框架之一。利用 Core ML，你可将机器学习模型整合到应用中，但并不需要了解神经网络和机器学习的相关知识。另外，你可以使用一些预处理的数据模型，只要将其转换成 Core ML 的模型即可。为了演示，我们将使用苹果开发者网站所提供的 Core ML 模型。闲话少叙，让我们开始学习 Core ML 吧。</p>
+<a id="more"></a>
+<p><div class="note success"><p><span style="color: #5FB760;"><strong>提示：</strong>为了完成教程，你需要使用 Xcode 9 beta 版，另外还需要运行 iOS 11 beta 版的设备，来测试教程中所介绍的特性。Xcode 9 beta 兼容 Swift 3.2 和 4.0 版本，以下代码全部基于 Swift 4.0 的语法完成。</span> </p>
+</div> &nbsp;</p>
+<h2 id="Core-ML-简介"><a href="#Core-ML-简介" class="headerlink" title="Core ML 简介"></a>Core ML 简介</h2><blockquote>
+<p>Core ML 可以使你将种类繁多的机器学习模型整合到应用中，除了支持30多种深度学习的模型类型外，还支持如 tree ensemble、SVM 和 generalized linear model 等标准模型。由于 Core ML 构建于 Matel 和 Accelerate 这种底层技术之上，因此，它可以充分利用 CPU、GPU 所提供的超高性能。你可以在设备上运行机器学习模型，而不用将分析设备和数据分离。</p>
+<p><strong>苹果官方文档</strong> - <a href="https://developer.apple.com/machine-learning/" target="_blank" rel="external">Core ML</a></p>
+</blockquote>
+<p>Core ML 是一款全新的框架，整合于 iOS 11 中，首次亮相于今年的 WWDC 上。有了它，你可以将机器学习模型整合进自己的应用中，多说一句，究竟什么是机器学习呢？简言之，机器学习是一种应用，这种应用可以不通过编程的方法，来给予计算机学习的能力。而模型则是机器学习算法与被处理数据结合后的产物。 </p>
+<p><img src="/2017/07/12/translation-coreml-introduction/images/trained-model.png" alt="images/trained-model.png" title=""> &nbsp;</p>
+<p>作为一名应用开发者，我们最关心的事，是如何把这些模型加入应用中，来做一些真正有趣的事。幸运的是，通过 Core ML，可以轻松集成多种机器学习模型，这使得开发者们可以实现很多特性，如图像识别、自然语言处理、文本预测等。</p>
+<p>现在，你可能会问，将这种人工智能整合到应用中会不会很困难？重点来了，Core ML 相当易于使用，在这篇教程中，你会看到我们仅用 10 行代码，就将 Core ML 整合到了应用中。</p>
+<p>是不是很酷？让我们开始吧！</p>
+<h2 id="Demo-预览"><a href="#Demo-预览" class="headerlink" title="Demo 预览"></a>Demo 预览</h2><p>应用很简单，用户可以通过拍照或在相册中选择照片，然后，机器学习算法会尝试预测图中的物体是什么，预测结果有可能并不那么完美，但重点是，你可以学会如何在应用中使用 Core ML。</p>
+<p><img src="/2017/07/12/translation-coreml-introduction/images/coreml-app-demo.png" alt="images/coreml-app-demo.png" title=""> &nbsp;</p>
+<h2 id="Getting-Started"><a href="#Getting-Started" class="headerlink" title="Getting Started"></a>Getting Started</h2><p>首先，打开 Xcode 9 并创建工程，选择 Single View App 模板，开发语言选择 Swift。</p>
+<p><img src="/2017/07/12/translation-coreml-introduction/images/xcode9-new-proj.png" alt="images/xcode9-new-proj.png" title=""> &nbsp;</p>
+<h2 id="创建用户界面"><a href="#创建用户界面" class="headerlink" title="创建用户界面"></a>创建用户界面</h2><p><div class="note success"><p><span style="color: #5FB760;"><strong>编者提示：</strong>如果你不想从零开始构建 UI，可以<strong><a href="https://github.com/appcoda/CoreMLDemo/raw/master/CoreMLDemoStarter.zip" target="_blank" rel="external">下载初始工程模板</a></strong>，并直接跳转到 Core ML 部分。</span> </p>
+</div> &nbsp;</p>
+<p>首先，切换至 <code>Main.storyboard</code> 文件，为视图添加一些 UI 组件，选中 ViewController 后，点击 Xcode 菜单栏中的 <code>Editor -&gt; Embed In -&gt; Navigation Controller</code>，完成该操作后，你会发现导航栏出现在了视图的顶部，双击导航栏，将标题修改为 Core ML（或者你认为合适的内容）。</p>
+<p><img src="/2017/07/12/translation-coreml-introduction/images/pic3.png" alt="images/pic3.png" title=""> &nbsp;</p>
+<p>接着，拖拽两个 BarButtonItem：分别放置于导航栏的两侧。选择左侧的 BarButtonItem，在 <code>Attributes Inspector</code> 中，修改 <code>System Item</code> 属性为”Camera”。然后选择右侧的 BarButtonItem，修改其名称为”Library”，这两个按钮可以让用户拍照或从相册中选择照片。</p>
+<p>最后，你还需要添加 <code>UILabel</code> 和 <code>UIImageView</code> 这两个组件。将 <code>UIImageView</code> 置于视图的中间，并修改其大小为 <code>299x299</code>。将 <code>UILabel</code> 置于视图地步，将其拉伸并顶满左右边框。至此，UI 部分已经完成了。</p>
+<p>我并没有提及如何配置视图组件的 Auto Layout 设置，我建议你来尝试完成，避免出现位置有歧义的视图组件。如果你对 Auto Layout 并不熟悉，从而无法完成这些设置，请在你要运行的设备上构建 Storyboard。</p>
+<p><img src="/2017/07/12/translation-coreml-introduction/images/coreml-storyboard.png" alt="images/coreml-storyboard.png" title=""> &nbsp;</p>
+<h2 id="实现-Camera-和照片库功能"><a href="#实现-Camera-和照片库功能" class="headerlink" title="实现 Camera 和照片库功能"></a>实现 Camera 和照片库功能</h2><p>UI 部分已经设计完成，让我们转到实现部分。在这部分中，我们会实现 Camera 和 Library 按钮的功能。选择 <code>ViewController.swift 文件</code>，使其符合 <code>UINavigationControllerDelegate</code> 协议，该协议是使用 <code>UIImagePickerController</code> 类所必须的。</p>
+<p><figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">ViewController</span>: <span class="title">UIViewController</span>, <span class="title">UINavigationControllerDelegate</span></span></div></pre></td></tr></table></figure> &nbsp;</p>
+<p>然后，为 label 和 image view 添加两个 outlet，将 <code>UIImageView</code> 类型的变量命名为 imageView，将 <code>UILabel</code> 类型的变量命名为 classifier。现在，你的代码看起来应该像下面这样：</p>
+<p><figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> UIKit</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">ViewController</span>: <span class="title">UIViewController</span>, <span class="title">UINavigationControllerDelegate</span> </span>&#123;</div><div class="line">    </div><div class="line">    <span class="meta">@IBOutlet</span> <span class="keyword">weak</span> <span class="keyword">var</span> imageView: <span class="type">UIImageView</span>!</div><div class="line">    <span class="meta">@IBOutlet</span> <span class="keyword">weak</span> <span class="keyword">var</span> classifer: <span class="type">UILabel</span>!</div><div class="line">    </div><div class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">func</span> <span class="title">viewDidLoad</span><span class="params">()</span></span> &#123;</div><div class="line">        <span class="keyword">super</span>.viewDidLoad()</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">func</span> <span class="title">didReceiveMemoryWarning</span><span class="params">()</span></span> &#123;</div><div class="line">        <span class="keyword">super</span>.didReceiveMemoryWarning()</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure> &nbsp;</p>
+<p>接下来，为两个 BarButtonItem 创建对应的 action，来响应其点击事件。将下面的方法添加到 <code>ViewController</code> 类中：</p>
+<p><figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@IBAction</span> <span class="function"><span class="keyword">func</span> <span class="title">camera</span><span class="params">(<span class="number">_</span> sender: Any)</span></span> &#123;</div><div class="line">    <span class="keyword">if</span> !<span class="type">UIImagePickerController</span>.isSourceTypeAvailable(.camera) &#123;</div><div class="line">        <span class="keyword">return</span></div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">let</span> cameraPicker = <span class="type">UIImagePickerController</span>()</div><div class="line">    cameraPicker.delegate = <span class="keyword">self</span></div><div class="line">    cameraPicker.sourceType = .camera</div><div class="line">    cameraPicker.allowsEditing = <span class="literal">false</span></div><div class="line">    </div><div class="line">    present(cameraPicker, animated: <span class="literal">true</span>)</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="meta">@IBAction</span> <span class="function"><span class="keyword">func</span> <span class="title">openLibrary</span><span class="params">(<span class="number">_</span> sender: Any)</span></span> &#123;</div><div class="line">    <span class="keyword">let</span> picker = <span class="type">UIImagePickerController</span>()</div><div class="line">    picker.delegate  = <span class="keyword">self</span></div><div class="line">    picker.sourceType = .photoLibrary</div><div class="line">    picker.allowsEditing = <span class="literal">false</span></div><div class="line">    </div><div class="line">    present(picker, animated: <span class="literal">true</span>)</div><div class="line">&#125;</div></pre></td></tr></table></figure> &nbsp;</p>
+<p>我们在这两个 action 中所做的，就是创建了一个 <code>UIImagePickerController</code> 类型的常量，禁止用户对照片进行编辑（无论是拍照还是从相册中选取的），然后设置该常量的 delegate 为 <code>ViewController</code> 对象，最后，我们把 <code>UIImagePickerController</code> 对象展现给用户。</p>
+<p>我们会看到一些编译错误，因为我们尚未实现 <code>UIImagePickerControllerDelegate</code> 类的方法，接下来，我们通过扩展的方式，使 <code>ViewController</code> 对象适配代理协议。 </p>
+<p><figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">extension</span> <span class="title">ViewController</span>: <span class="title">UIImagePickerControllerDelegate</span> </span>&#123;</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">func</span> <span class="title">imagePickerControllerDidCancel</span><span class="params">(<span class="number">_</span> picker: UIImagePickerController)</span></span> &#123;</div><div class="line">        dismiss(animated: <span class="literal">true</span>, completion: <span class="literal">nil</span>)</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">&#125;</div></pre></td></tr></table></figure> &nbsp;</p>
+<p>当用户取消选择图片时，通过上面的代码进行处理。另外，这段代码也是 <code>ViewController.swift</code> 文件的一部分，现在，你的代码看起来应该像这样：</p>
+<p><figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> UIKit</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">ViewController</span>: <span class="title">UIViewController</span>, <span class="title">UINavigationControllerDelegate</span> </span>&#123;</div><div class="line">    </div><div class="line">    <span class="meta">@IBOutlet</span> <span class="keyword">weak</span> <span class="keyword">var</span> imageView: <span class="type">UIImageView</span>!</div><div class="line">    <span class="meta">@IBOutlet</span> <span class="keyword">weak</span> <span class="keyword">var</span> classifer: <span class="type">UILabel</span>!</div><div class="line">    </div><div class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">func</span> <span class="title">viewDidLoad</span><span class="params">()</span></span> &#123;</div><div class="line">        <span class="keyword">super</span>.viewDidLoad()</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">func</span> <span class="title">didReceiveMemoryWarning</span><span class="params">()</span></span> &#123;</div><div class="line">        <span class="keyword">super</span>.didReceiveMemoryWarning()</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="meta">@IBAction</span> <span class="function"><span class="keyword">func</span> <span class="title">camera</span><span class="params">(<span class="number">_</span> sender: Any)</span></span> &#123;</div><div class="line">        <span class="keyword">if</span> !<span class="type">UIImagePickerController</span>.isSourceTypeAvailable(.camera) &#123;</div><div class="line">            <span class="keyword">return</span></div><div class="line">        &#125;</div><div class="line">        </div><div class="line">        <span class="keyword">let</span> cameraPicker = <span class="type">UIImagePickerController</span>()</div><div class="line">        cameraPicker.delegate = <span class="keyword">self</span></div><div class="line">        cameraPicker.sourceType = .camera</div><div class="line">        cameraPicker.allowsEditing = <span class="literal">false</span></div><div class="line">        </div><div class="line">        present(cameraPicker, animated: <span class="literal">true</span>)</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="meta">@IBAction</span> <span class="function"><span class="keyword">func</span> <span class="title">openLibrary</span><span class="params">(<span class="number">_</span> sender: Any)</span></span> &#123;</div><div class="line">        <span class="keyword">let</span> picker = <span class="type">UIImagePickerController</span>()</div><div class="line">        picker.delegate  = <span class="keyword">self</span></div><div class="line">        picker.sourceType = .photoLibrary</div><div class="line">        picker.allowsEditing = <span class="literal">false</span></div><div class="line">        </div><div class="line">        present(picker, animated: <span class="literal">true</span>)</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">extension</span> <span class="title">ViewController</span>: <span class="title">UIImagePickerControllerDelegate</span> </span>&#123;</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">func</span> <span class="title">imagePickerControllerDidCancel</span><span class="params">(<span class="number">_</span> picker: UIImagePickerController)</span></span> &#123;</div><div class="line">        dismiss(animated: <span class="literal">true</span>, completion: <span class="literal">nil</span>)</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">&#125;</div></pre></td></tr></table></figure> &nbsp;</p>
+<p>回过头来，切换到 <code>Main.storyboard</code> 文件，保证你设置的 outlet 和 action 均已绑定完毕。</p>
+<p>为了访问摄像头和照片库，还有最后一件我们必须要做的事。找到工程中的 <code>Info.plist</code> 文件，添加两个条目：<em>Privacy – Camera Usage Description</em> 和 <em>Privacy – Photo Library Usage Description</em>。从 iOS 10 开始，若要使用摄像头和照片库，你必须描述其使用原因。</p>
+<p><img src="/2017/07/12/translation-coreml-introduction/images/coreml-plist-privacy.png" alt="images/coreml-plist-privacy.png" title=""> &nbsp;</p>
+<p>好了，就这样！马上，你就要进入到本教程的核心部分！再重复一遍，如果你不想从零开始构建 UI，可以<strong><a href="https://github.com/appcoda/CoreMLDemo/raw/master/CoreMLDemoStarter.zip" target="_blank" rel="external">下载出事工程模板</a></strong>。</p>
+<h2 id="整合-Core-ML-数据模型"><a href="#整合-Core-ML-数据模型" class="headerlink" title="整合 Core ML 数据模型"></a>整合 Core ML 数据模型</h2><p>现在，我们来换换档，把 Core ML 数据模型整合进应用中。之前提到过，我们需要使用预处理过的数据模型，与 Core ML 协同工作。当然，你可以构建自己的模型，但在这个 demo 中，我们使用苹果开发者网站中提供的预处理模型。</p>
+<p>访问苹果开发者网站中的<strong><a href="https://developer.apple.com/machine-learning/" target="_blank" rel="external">机器学习</a></strong>页面，滚动到页面的下方，会发现4种预处理的数据模型。</p>
+<p><div class="note warning"><p><span style="color: #EEAC57;"><strong>译者注：</strong>在翻译该文时，苹果官网中所提供的数据模型已增加到 5 种。</span> </p>
+</div> &nbsp;</p>
+<p><img src="/2017/07/12/translation-coreml-introduction/images/coreml-pretrained-model.png" alt="images/coreml-pretrained-model.png" title=""> &nbsp;</p>
+<p>在本教程中，我们选择 <em>Inception v3</em> 模型，当然，你也可以去尝试其他模型。下载完成后，将它添加到工程中，看看它都显示了什么？</p>
+<p><img src="/2017/07/12/translation-coreml-introduction/images/coreml-model-desc.png" alt="images/coreml-model-desc.png" title=""> &nbsp;</p>
+<p><div class="note default"><p><strong>提示：</strong>保证数据模型的 Target Membership 处勾选了当前工程，否则应用将无法访问该文件。</p>
+</div> &nbsp;</p>
+<p>从上图中可以发现，当前模型为神经网络分类，另外，你还要注意的信息是 Model Evaluation Parameters，它说明了模型接受的输入参数的要求，以及输出内容的信息。当前模型接收 299x299 的图片作为输入，并返回可能性最高的分类描述，以及每种分类的可能性。</p>
+<p>另外要注意的是 Model Class，它（Inceptionv3）是由机器学习模型所生成的，可以直接在代码中使用。如果你点击 <code>Inceptionv3</code> 类右侧的下一步箭头，就可以看到这个类的源代码。</p>
+<p><img src="/2017/07/12/translation-coreml-introduction/images/inceptionv3-class.png" alt="images/inceptionv3-class.png" title=""> &nbsp;</p>
+<p>下面，我们来把数据模型加入到代码中。切换到 <code>ViewController.swift</code> 文件，在文件的最开始部分，导入 Core ML 框架。</p>
+<p><figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> CoreML</div></pre></td></tr></table></figure> &nbsp;</p>
+<p>然后，定义一个 <code>Inceptionv3</code> 类型的变量，并在 <code>viewWillAppear()</code> 方法中进行初始化：</p>
+<p><figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> model: <span class="type">Inceptionv3</span>!</div><div class="line"></div><div class="line"><span class="keyword">override</span> <span class="function"><span class="keyword">func</span> <span class="title">viewWillAppear</span><span class="params">(<span class="number">_</span> animated: Bool)</span></span> &#123;</div><div class="line">    model = <span class="type">Inceptionv3</span>()</div><div class="line">&#125;</div></pre></td></tr></table></figure> &nbsp;</p>
+<p>我知道你在想什么。</p>
+<p>“好吧，Sai，你为什么不早点初始化它？”</p>
+<p>“在 <code>viewWillAppear</code> 方法中定义它的重点是什么？”</p>
+<p>好吧，朋友，重点就是，当你的应用尝试识别图像中的物体时，它会快很多！</p>
+<p>如果我们回过头来看 <code>Inceptionv3.mlmodel</code>，你会发现，输入仅仅是一张尺寸为 <code>299x299</code> 的图片，那我们如何把图片转换成这个尺寸呢？别介，这就是下面我们要做的。</p>
+<h2 id="转换图像"><a href="#转换图像" class="headerlink" title="转换图像"></a>转换图像</h2><p>把 <code>ViewController.swift</code> 文件的扩展部分的代码更新成如下所示，我们会实现 <code>imagePickerController(_:didFinishPickingMediaWithInfo)</code> 来处理所选的图片。</p>
+<p><figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">extension</span> <span class="title">ViewController</span>: <span class="title">UIImagePickerControllerDelegate</span> </span>&#123;</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">func</span> <span class="title">imagePickerControllerDidCancel</span><span class="params">(<span class="number">_</span> picker: UIImagePickerController)</span></span> &#123;</div><div class="line">        dismiss(animated: <span class="literal">true</span>, completion: <span class="literal">nil</span>)</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">func</span> <span class="title">imagePickerController</span><span class="params">(<span class="number">_</span> picker: UIImagePickerController,</span></span></div><div class="line">                               didFinishPickingMediaWithInfo info: [String : Any]) &#123;</div><div class="line">        </div><div class="line">        picker.dismiss(animated: <span class="literal">true</span>)</div><div class="line">        </div><div class="line">        classifer.text = <span class="string">"Analyzing Image..."</span></div><div class="line">        </div><div class="line">        <span class="keyword">guard</span> <span class="keyword">let</span> image = info[<span class="string">"UIImagePickerControllerOriginalImage"</span>] <span class="keyword">as</span>? <span class="type">UIImage</span> <span class="keyword">else</span> &#123; <span class="keyword">return</span> &#125;</div><div class="line">        </div><div class="line">        <span class="type">UIGraphicsBeginImageContextWithOptions</span>(<span class="type">CGSize</span>(width: <span class="number">299</span>, height: <span class="number">299</span>), <span class="literal">true</span>, <span class="number">2.0</span>)</div><div class="line">        image.draw(<span class="keyword">in</span>: <span class="type">CGRect</span>(x: <span class="number">0</span>, y: <span class="number">0</span>, width: <span class="number">299</span>, height: <span class="number">299</span>))</div><div class="line">        </div><div class="line">        <span class="keyword">let</span> newImage = <span class="type">UIGraphicsGetImageFromCurrentImageContext</span>()!</div><div class="line">        <span class="type">UIGraphicsEndImageContext</span>()</div><div class="line">        </div><div class="line">        <span class="keyword">let</span> attrs = [kCVPixelBufferCGImageCompatibilityKey: kCFBooleanTrue,</div><div class="line">                     kCVPixelBufferCGBitmapContextCompatibilityKey: kCFBooleanTrue] <span class="keyword">as</span> <span class="type">CFDictionary</span></div><div class="line">        </div><div class="line">        <span class="keyword">var</span> pixelBuffer: <span class="type">CVPixelBuffer</span>?</div><div class="line">        <span class="keyword">let</span> status = <span class="type">CVPixelBufferCreate</span>(kCFAllocatorDefault,</div><div class="line">                                         <span class="type">Int</span>(newImage.size.width),</div><div class="line">                                         <span class="type">Int</span>(newImage.size.height),</div><div class="line">                                         kCVPixelFormatType_32ARGB,</div><div class="line">                                         attrs,</div><div class="line">                                         &amp;pixelBuffer)</div><div class="line">        </div><div class="line">        <span class="keyword">guard</span> status == kCVReturnSuccess <span class="keyword">else</span> &#123; <span class="keyword">return</span> &#125;</div><div class="line">        </div><div class="line">        <span class="type">CVPixelBufferLockBaseAddress</span>(pixelBuffer!, <span class="type">CVPixelBufferLockFlags</span>(rawValue: <span class="number">0</span>))</div><div class="line">        <span class="keyword">let</span> pixelData = <span class="type">CVPixelBufferGetBaseAddress</span>(pixelBuffer!)</div><div class="line">        </div><div class="line">        <span class="keyword">let</span> rgbColorSpace = <span class="type">CGColorSpaceCreateDeviceRGB</span>()</div><div class="line">        <span class="keyword">let</span> context = <span class="type">CGContext</span>(data: pixelData,</div><div class="line">                                width: <span class="type">Int</span>(newImage.size.width),</div><div class="line">                                height: <span class="type">Int</span>(newImage.size.height),</div><div class="line">                                bitsPerComponent: <span class="number">8</span>,</div><div class="line">                                bytesPerRow: <span class="type">CVPixelBufferGetBytesPerRow</span>(pixelBuffer!),</div><div class="line">                                space: rgbColorSpace,</div><div class="line">                                bitmapInfo: <span class="type">CGImageAlphaInfo</span>.noneSkipFirst.rawValue)</div><div class="line">        </div><div class="line">        context?.translateBy(x: <span class="number">0</span>, y: newImage.size.height)</div><div class="line">        context?.scaleBy(x: <span class="number">1.0</span>, y: -<span class="number">1.0</span>)</div><div class="line">        </div><div class="line">        <span class="type">UIGraphicsPushContext</span>(context!)</div><div class="line">        newImage.draw(<span class="keyword">in</span>: <span class="type">CGRect</span>(x: <span class="number">0</span>, y: <span class="number">0</span>, width: newImage.size.width, height: newImage.size.height))</div><div class="line">        <span class="type">UIGraphicsPopContext</span>()</div><div class="line">        <span class="type">CVPixelBufferUnlockBaseAddress</span>(pixelBuffer!, <span class="type">CVPixelBufferLockFlags</span>(rawValue: <span class="number">0</span>))</div><div class="line">        </div><div class="line">        imageView.image = newImage</div><div class="line">        </div><div class="line">    &#125;</div><div class="line">    </div><div class="line">&#125;</div></pre></td></tr></table></figure> &nbsp;</p>
+<p>以上代码的作用：</p>
+<ol>
+<li><strong>10-14 行</strong>：在方法中的最初几行，我们从 <code>info</code> 字典中获取所选择的图片（使用 <code>UIImagePickerControllerOriginalImage</code> 键），另外，一旦我们选择完毕，就关闭 <code>UIImagePickerController</code>。</li>
+<li><strong>16-20 行</strong>：由于数据模型仅接受尺寸为 <code>299x299</code> 的图片，所以我们把所选图片转换成方形，接着，我们把这个方形图片赋值给另一个常量 <code>newImage</code>。</li>
+<li><strong>22-33 行</strong>：现在，我们把 <code>newImage</code> 转换成 <code>CVPixelBuffer</code>。你可能不太熟悉 <code>CVPixelBuffer</code>，其实，它就是内存中一块保存像素的图像缓存区。你可以<strong><a href="https://developer.apple.com/documentation/corevideo/cvpixelbuffer-q2e" target="_blank" rel="external">在这</a></strong>了解更多关于它的信息。</li>
+<li><strong>47-48 行</strong>：我们使用所有呈现图片的像素，并将其转化为依赖设备的 RGB 色彩空间。接着，使用所有数据创建 <code>CGContext</code>，当我们打算渲染（或更改）一些底层参数时，可以很轻松的调用它，也就是接下来两行代码所做的——转换和缩放图片。</li>
+<li><strong>50-55 行</strong>：最后，我们生成图像，移除栈顶的上下文内容，并将 <code>imageView.image</code> 的值设置为 <code>newImage</code>。</li>
+</ol>
+<p>即使你不太了解上面的代码也没关系，这些都是高级的 <code>Core Image</code> 代码，而这并不在本教程所涵盖的范围内。你只需要知道，我们将图像转换成了数据模型可以接受的格式。我建议你修改其中的数字并观察最终的生成结果，来更好地理解上述代码。</p>
+<h2 id="使用-Core-ML"><a href="#使用-Core-ML" class="headerlink" title="使用 Core ML"></a>使用 Core ML</h2><p>让我们将焦点移回到 Core ML。我们使用 Inceptionv3 模型来实现物体识别，来吧，只需要几行代码而已。将下面的代码片段粘贴到 <code>imageView.image = newImage</code> 的下一行。</p>
+<p><figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">guard</span> <span class="keyword">let</span> prediction = <span class="keyword">try</span>? model.prediction(image: pixelBuffer!) <span class="keyword">else</span> &#123; <span class="keyword">return</span> &#125;</div><div class="line">classifer.text = <span class="string">"I think this is a <span class="subst">\(prediction.classLabel)</span>."</span></div></pre></td></tr></table></figure> &nbsp;</p>
+<p>搞定了！使用 <code>Inceptionv3</code> 类中的 <code>prediction(image:)</code> 方法来预测图像中的物体。我们将 <code>pixelBuffer</code>（重置大小的图像）作为参数传递给方法，一旦预测完成，预测结果会以字符串的形式返回，我们只要更新 <code>classifier</code> 的 <code>text</code> 属性，即可显示识别结果。</p>
+<p>是时候来测试一下我们的应用了！编译代码并在模拟器中运行它，拍照或从照片库中选择一张照片，应用就会告诉你，它识别出了什么。</p>
+<p><img src="/2017/07/12/translation-coreml-introduction/images/coreml-successful-case.jpg" alt="images/coreml-successful-case.jpg" title=""> &nbsp;</p>
+<p>在测试过程中，有时你可能会发现识别结果并不正确。这并非程序的问题，而是由于预处理数据模型造成的。</p>
+<p><img src="/2017/07/12/translation-coreml-introduction/images/coreml-failed-case.jpg" alt="images/coreml-failed-case.jpg" title=""> &nbsp;</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>我希望你已经了解了如何将 Core ML 整合进应用中，这只是一片介绍性的教程，如果你有兴趣将预处理的 Caffe、Keras 或 SciKit 模型转换成 Core ML 模型，请继续关注 Core ML 系列教程的下一篇，我会告诉你如何转换它们。</p>
+<p>你可以在 <strong><a href="https://github.com/appcoda/CoreMLDemo" target="_blank" rel="external">GitHub</a></strong> 上获取本教程的全部代码。</p>
+<p>更多关于 Core ML 框架的细节，可通过访问<strong><a href="https://developer.apple.com/documentation/coreml" target="_blank" rel="external">苹果官方网站</a></strong>进行查询。你也可以参考 WWDC 2017 中关于 Core ML 的相关部分：</p>
+<ul>
+<li><strong><a href="https://developer.apple.com/videos/play/wwdc2017/703/" target="_blank" rel="external">Introducing Core ML</a></strong></li>
+<li><strong><a href="https://developer.apple.com/videos/play/wwdc2017/710/" target="_blank" rel="external">Core ML in Depth</a></strong></li>
+</ul>
+<p>你对 Core ML 有何感想？请留言给我！</p>
+<blockquote>
+<p><a href="https://www.appcoda.com/coreml-introduction" target="_blank" rel="external">原文链接</a></p>
+</blockquote>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/07/06/2017年书单/" rel="next" title="2017年书单">
+                <i class="fa fa-chevron-left"></i> 2017年书单
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/07/13/translation-corelm-game/" rel="prev" title="使用 Core ML 创建简单游戏">
+                使用 Core ML 创建简单游戏 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8yOTI5OS81ODY3"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="https://avatars3.githubusercontent.com/u/1787383?v=3&u=63a1e261c730210a371bbbd265f7a91727ca22b3&s=400"
+               alt="Stoner" />
+          <p class="site-author-name" itemprop="name">Stoner</p>
+           
+              <p class="site-description motion-element" itemprop="description">蜗壳，沉重却是生命的归宿；<br>脚步，缓慢但从未止步不前。</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">4</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/stoner30" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Core-ML-简介"><span class="nav-number">1.</span> <span class="nav-text">Core ML 简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Demo-预览"><span class="nav-number">2.</span> <span class="nav-text">Demo 预览</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Getting-Started"><span class="nav-number">3.</span> <span class="nav-text">Getting Started</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#创建用户界面"><span class="nav-number">4.</span> <span class="nav-text">创建用户界面</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实现-Camera-和照片库功能"><span class="nav-number">5.</span> <span class="nav-text">实现 Camera 和照片库功能</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#整合-Core-ML-数据模型"><span class="nav-number">6.</span> <span class="nav-text">整合 Core ML 数据模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#转换图像"><span class="nav-number">7.</span> <span class="nav-text">转换图像</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用-Core-ML"><span class="nav-number">8.</span> <span class="nav-text">使用 Core ML</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">9.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Stoner</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+    <script type="text/javascript">
+      (function(d, s) {
+        var j, e = d.getElementsByTagName(s)[0];
+        if (typeof LivereTower === 'function') { return; }
+        j = d.createElement(s);
+        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+        j.async = true;
+        e.parentNode.insertBefore(j, e);
+      })(document, 'script');
+    </script>
+  
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

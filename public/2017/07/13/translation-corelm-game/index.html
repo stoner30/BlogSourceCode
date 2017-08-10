@@ -1,0 +1,1242 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="原文链接  WWDC 2017 中，iOS 推出了很多惊艳的 API，Core ML 就是最受关注的一个（当然，ARKit 也是相当酷炫的！）。Core ML 可以使开发者在不了解神经网络或机器学习算法等相关知识的前提下，轻松地在应用中使用机器学习模型。今天，我们来展示下如何用 Core ML 轻松地构建出一款游戏。我们将创建一款简单的拾荒者游戏，玩家需要在房间中转来转去，去寻找指定的物品。在开">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用 Core ML 创建简单游戏">
+<meta property="og:url" content="https://blog.snail-shell.studio/2017/07/13/translation-corelm-game/index.html">
+<meta property="og:site_name" content="随语">
+<meta property="og:description" content="原文链接  WWDC 2017 中，iOS 推出了很多惊艳的 API，Core ML 就是最受关注的一个（当然，ARKit 也是相当酷炫的！）。Core ML 可以使开发者在不了解神经网络或机器学习算法等相关知识的前提下，轻松地在应用中使用机器学习模型。今天，我们来展示下如何用 Core ML 轻松地构建出一款游戏。我们将创建一款简单的拾荒者游戏，玩家需要在房间中转来转去，去寻找指定的物品。在开">
+<meta property="og:image" content="https://blog.snail-shell.studio/2017/07/13/translation-corelm-game/images/image-1.png">
+<meta property="og:image" content="https://blog.snail-shell.studio/2017/07/13/translation-corelm-game/images/image-2.png">
+<meta property="og:image" content="https://blog.snail-shell.studio/2017/07/13/translation-corelm-game/images/image-3.png">
+<meta property="og:image" content="https://blog.snail-shell.studio/2017/07/13/translation-corelm-game/images/image-4.png">
+<meta property="og:image" content="https://blog.snail-shell.studio/2017/07/13/translation-corelm-game/images/image-5.png">
+<meta property="og:image" content="https://blog.snail-shell.studio/2017/07/13/translation-corelm-game/images/image-6.png">
+<meta property="og:image" content="https://blog.snail-shell.studio/2017/07/13/translation-corelm-game/images/image-7.png">
+<meta property="og:image" content="https://blog.snail-shell.studio/2017/07/13/translation-corelm-game/images/image-8.png">
+<meta property="og:image" content="https://blog.snail-shell.studio/2017/07/13/translation-corelm-game/images/image-8.png">
+<meta property="og:image" content="https://blog.snail-shell.studio/2017/07/13/translation-corelm-game/images/image-10.png">
+<meta property="og:updated_time" content="2017-07-14T07:58:33.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="使用 Core ML 创建简单游戏">
+<meta name="twitter:description" content="原文链接  WWDC 2017 中，iOS 推出了很多惊艳的 API，Core ML 就是最受关注的一个（当然，ARKit 也是相当酷炫的！）。Core ML 可以使开发者在不了解神经网络或机器学习算法等相关知识的前提下，轻松地在应用中使用机器学习模型。今天，我们来展示下如何用 Core ML 轻松地构建出一款游戏。我们将创建一款简单的拾荒者游戏，玩家需要在房间中转来转去，去寻找指定的物品。在开">
+<meta name="twitter:image" content="https://blog.snail-shell.studio/2017/07/13/translation-corelm-game/images/image-1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://blog.snail-shell.studio/2017/07/13/translation-corelm-game/"/>
+
+
+
+
+
+  <title>使用 Core ML 创建简单游戏 | 随语</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">随语</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://blog.snail-shell.studio/2017/07/13/translation-corelm-game/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Stoner">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://avatars3.githubusercontent.com/u/1787383?v=3&u=63a1e261c730210a371bbbd265f7a91727ca22b3&s=400">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="随语">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">使用 Core ML 创建简单游戏</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-07-13T10:14:38+08:00">
+                2017-07-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/译文/" itemprop="url" rel="index">
+                    <span itemprop="name">译文</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p><a href="https://www.appcoda.com/coreml-game" target="_blank" rel="external">原文链接</a></p>
+</blockquote>
+<p>WWDC 2017 中，iOS 推出了很多惊艳的 API，Core ML 就是最受关注的一个（当然，ARKit 也是相当酷炫的！）。Core ML 可以使开发者在不了解神经网络或机器学习算法等相关知识的前提下，轻松地在应用中使用机器学习模型。今天，我们来展示下如何用 Core ML 轻松地构建出一款游戏。我们将创建一款简单的拾荒者游戏，玩家需要在房间中转来转去，去寻找指定的物品。在开始之前，我建议读者先参考下我们之前发布的关于<strong><a href="http://www.appcoda.com/coreml-introduction" target="_blank" rel="external"> Core ML 介绍的教程</a></strong>。</p>
+<a id="more"></a>
+<p><div class="note success"><p><span style="color: #5FB760;"><strong>提示：</strong>本教程需要用到 Xcode 9 beta 版，另外，你还需要一部安装了 iOS 11 beta 版的设备，用来运行和测试应用，本次的应用不会在模拟器中运行，当然，你也可以使用像 iPhone 5s 这样的老款设备，但运行速度会有点慢。Xcode 9 beta 兼容 Swift 3.2 和 4.0 版本，以下代码全部基于 Swift 4.0 的语法完成。</span> </p>
+</div> &nbsp;</p>
+<h2 id="应用概述"><a href="#应用概述" class="headerlink" title="应用概述"></a>应用概述</h2><p>今天我们将要创建一款简单的应用，当然，玩法也很简单。当玩家点击 Start 按钮后，屏幕上方将随机出现物品名称，玩家的任务就是去找到它们。当玩家发现了指定的物品，只需将设备对准它，iPhone 会通过机器学习算法来识别它，成功找到一个物品后，会自动显示下一个物品。每次搜寻成功后，都会增加点数。另外，当玩家无法找到指定物品时，也可以选择跳过它。</p>
+<p>本次制作的应用，在物品识别方面，与之前介绍 Core ML 的教程有些许差异，主要的区别是，我们将采用摄像头采集实时图像，而非简单地选择一张图片。</p>
+<p><img src="/2017/07/13/translation-corelm-game/images/image-1.png" alt="images/image-1.png" title=""> &nbsp;</p>
+<h2 id="创建工程"><a href="#创建工程" class="headerlink" title="创建工程"></a>创建工程</h2><p>打开 Xcode 9 创建工程，选择 <em>Single View App</em> 模板，虽然我们创建的是一款游戏，但使用 <em>Single View App</em> 模板已经足够了。将工程命名为 <em>CoreMLScavenge</em>，当然，你也可以选择你喜欢的名称。另外，确保开发语言为 <em>Swift</em>。</p>
+<p><img src="/2017/07/13/translation-corelm-game/images/image-2.png" alt="images/image-2.png" title=""> &nbsp;</p>
+<p>成功创建工程后，取消选择工程描述文件中的 <code>Landscape Left</code> 和 <code>Landscape Right</code> 选项，我们希望这款游戏只在垂直模式下运行。</p>
+<p><img src="/2017/07/13/translation-corelm-game/images/image-3.png" alt="images/image-3.png" title=""> &nbsp;</p>
+<h2 id="创建用户界面"><a href="#创建用户界面" class="headerlink" title="创建用户界面"></a>创建用户界面</h2><p>是时候来点有意思的了！在导航面板中找到 <code>Main.storyboard</code> 文件，并在 View Controller 的上方和下方添加两个 <code>View</code>，将它们的宽度拉伸至与 View Controller 同宽，高度固定为 85px。整个的背景用来做图像采集窗口，所以我们要在之前添加的 <code>View</code> 组件上添加按钮和标签。将背景颜色设置为浅灰色，这样就能防止我们误将其他组件添加到背景上了。</p>
+<p><img src="/2017/07/13/translation-corelm-game/images/image-4.png" alt="images/image-4.png" title=""> &nbsp;</p>
+<p>在上方的视图中添加两个 <code>UILabel</code> 组件，一个居中放置，另一个靠左。居中的标签用来显示所要寻找的物品，所以，尽量将它拉宽点，这样就有足够的空间显示文字了。而左边的标签仅仅用来显示两位数的得分，所以可以适当地缩小它。</p>
+<p><img src="/2017/07/13/translation-corelm-game/images/image-5.png" alt="images/image-5.png" title=""> &nbsp;</p>
+<p>在下方的视图中添加两个 <code>UILabel</code> 和两个 <code>UIButton</code> 组件，一个标签显示当前记录，另一个显示历史最高记录，两个按钮中的一个显示 “Start”，点击后将开始游戏，另一个则显示为 “Skip”，当玩家找不到指定物品时，点击该按钮可以跳过。</p>
+<p><img src="/2017/07/13/translation-corelm-game/images/image-6.png" alt="images/image-6.png" title=""> &nbsp;</p>
+<p>此处，我不准备介绍 Auto Layout 的相关设置了，我建议你自己完成。可以访问<strong><a href="http://www.appcoda.com/introduction-auto-layout/" target="_blank" rel="external">这里</a></strong>来了解如何使用 Auto Layout。如果你实在无法完成 Auto Layout 设置，那就确保在你要运行的设备上进行界面设计工作。</p>
+<h2 id="创建视图"><a href="#创建视图" class="headerlink" title="创建视图"></a>创建视图</h2><p>UI 的工作已经完毕了，下面我们要开始编码了。选择 <code>ViewController.swift</code> 文件，在文件的开始部分导入所需的框架。</p>
+<p><figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> MobileCoreServices</div><div class="line"><span class="keyword">import</span> Vision</div><div class="line"><span class="keyword">import</span> AVKit</div></pre></td></tr></table></figure> &nbsp;</p>
+<p>接下来添加 8 个 outlet 并将它们与 UI 关联起来。</p>
+<p><figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@IBOutlet</span> <span class="keyword">var</span> scoreLabel: <span class="type">UILabel</span>!</div><div class="line"><span class="meta">@IBOutlet</span> <span class="keyword">var</span> highscoreLabel: <span class="type">UILabel</span>!</div><div class="line"><span class="meta">@IBOutlet</span> <span class="keyword">var</span> timeLabel: <span class="type">UILabel</span>!</div><div class="line"><span class="meta">@IBOutlet</span> <span class="keyword">var</span> objectLabel: <span class="type">UILabel</span>!</div><div class="line"><span class="meta">@IBOutlet</span> <span class="keyword">var</span> startButton: <span class="type">UIButton</span>!</div><div class="line"><span class="meta">@IBOutlet</span> <span class="keyword">var</span> skipButton: <span class="type">UIButton</span>!</div><div class="line"><span class="meta">@IBOutlet</span> <span class="keyword">var</span> topView: <span class="type">UIView</span>!</div><div class="line"><span class="meta">@IBOutlet</span> <span class="keyword">var</span> bottomView: <span class="type">UIView</span>!</div></pre></td></tr></table></figure> &nbsp;</p>
+<p>现在，你的代码看起来应该是这样的：</p>
+<p><figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> UIKit</div><div class="line"><span class="keyword">import</span> MobileCoreServices</div><div class="line"><span class="keyword">import</span> Vision</div><div class="line"><span class="keyword">import</span> AVKit</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">ViewController</span>: <span class="title">UIViewController</span> </span>&#123;</div><div class="line">    </div><div class="line">    <span class="meta">@IBOutlet</span> <span class="keyword">var</span> scoreLabel: <span class="type">UILabel</span>!</div><div class="line">    <span class="meta">@IBOutlet</span> <span class="keyword">var</span> highscoreLabel: <span class="type">UILabel</span>!</div><div class="line">    <span class="meta">@IBOutlet</span> <span class="keyword">var</span> timeLabel: <span class="type">UILabel</span>!</div><div class="line">    <span class="meta">@IBOutlet</span> <span class="keyword">var</span> objectLabel: <span class="type">UILabel</span>!</div><div class="line">    <span class="meta">@IBOutlet</span> <span class="keyword">var</span> startButton: <span class="type">UIButton</span>!</div><div class="line">    <span class="meta">@IBOutlet</span> <span class="keyword">var</span> skipButton: <span class="type">UIButton</span>!</div><div class="line">    <span class="meta">@IBOutlet</span> <span class="keyword">var</span> topView: <span class="type">UIView</span>!</div><div class="line">    <span class="meta">@IBOutlet</span> <span class="keyword">var</span> bottomView: <span class="type">UIView</span>!</div><div class="line"></div><div class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">func</span> <span class="title">viewDidLoad</span><span class="params">()</span></span> &#123;</div><div class="line">        <span class="keyword">super</span>.viewDidLoad()</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">func</span> <span class="title">didReceiveMemoryWarning</span><span class="params">()</span></span> &#123;</div><div class="line">        <span class="keyword">super</span>.didReceiveMemoryWarning()</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure> &nbsp;</p>
+<p>我们再来添加一些全局变量，把它们加在 outlet 的下方即可。</p>
+<p><figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> cameraLayer: <span class="type">CALayer</span>!</div><div class="line"><span class="keyword">var</span> gameTimer: <span class="type">Timer</span>!</div><div class="line"><span class="keyword">var</span> timeRemaining = <span class="number">60</span></div><div class="line"><span class="keyword">var</span> currentScore = <span class="number">0</span></div><div class="line"><span class="keyword">var</span> highScore = <span class="number">0</span></div></pre></td></tr></table></figure> &nbsp;</p>
+<p>让我们来一一解释下它们：<br><strong>第 1 行：</strong>摄像头对应的层，后面会把它添加到 <code>View</code> 上并充满整个屏幕。<br><strong>第 2 行：</strong>稍后，我们将创建一个游戏计时器，把它定义为一个全局变量，我们就可以在任何方法中使它失效（停止计时）。<br><strong>第 3 行：</strong>这个变量用来保存剩余时间，它的初始值为 60，即游戏能持续 1 分钟。你可以任意修改它的值，让游戏时间更长或更短。<br><strong>第 4 行：</strong>这个变量用来保存用户的记录，没找到一件物品后，记录的分数就会加 1。<br><strong>第 5 行：</strong>这个变量用来保存用户的最高记录，每当应用启动后，我们会从 UserDefaults 中获取它，并把它赋值给当前变量。</p>
+<p>将大量的代码都放入 <code>viewDidLoad</code> 方法中，会使代码结构相当凌乱，为此，我们会在 <code>viewDidLoad</code> 方法下方添加一个 <code>viewSetup</code> 方法，用来处理基本的 UI 设置。</p>
+<p>将下面的内容添加到 <code>viewDidLoad</code> 方法中：</p>
+<p><figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">viewSetup()</div></pre></td></tr></table></figure> &nbsp;</p>
+<p>在 <code>viewDidLoad</code> 方法的下方添加如下代码：</p>
+<p><figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">viewSetup</span><span class="params">()</span></span> &#123;</div><div class="line">    <span class="keyword">let</span> backgroundColor = <span class="type">UIColor</span>(red: <span class="number">255</span>/<span class="number">255</span>, green: <span class="number">255</span>/<span class="number">255</span>, blue: <span class="number">255</span>/<span class="number">255</span>, alpha: <span class="number">0.8</span>)</div><div class="line">    topView.backgroundColor = backgroundColor</div><div class="line">    bottomView.backgroundColor = backgroundColor</div><div class="line">    scoreLabel.text = <span class="string">"0"</span></div><div class="line">&#125;</div></pre></td></tr></table></figure> &nbsp;</p>
+<p>上述代码的作用，是将上方和下方的视图背景设置为半透明，我们可以隐约它们后面的视频采集画面，另外，我们还设置了记录的分数为 0。</p>
+<p>现在，你的代码看起来应该是这样的：</p>
+<p><figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> UIKit</div><div class="line"><span class="keyword">import</span> MobileCoreServices</div><div class="line"><span class="keyword">import</span> Vision</div><div class="line"><span class="keyword">import</span> AVKit</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">ViewController</span>: <span class="title">UIViewController</span> </span>&#123;</div><div class="line">    </div><div class="line">    <span class="meta">@IBOutlet</span> <span class="keyword">var</span> scoreLabel: <span class="type">UILabel</span>!</div><div class="line">    <span class="meta">@IBOutlet</span> <span class="keyword">var</span> highscoreLabel: <span class="type">UILabel</span>!</div><div class="line">    <span class="meta">@IBOutlet</span> <span class="keyword">var</span> timeLabel: <span class="type">UILabel</span>!</div><div class="line">    <span class="meta">@IBOutlet</span> <span class="keyword">var</span> objectLabel: <span class="type">UILabel</span>!</div><div class="line">    <span class="meta">@IBOutlet</span> <span class="keyword">var</span> startButton: <span class="type">UIButton</span>!</div><div class="line">    <span class="meta">@IBOutlet</span> <span class="keyword">var</span> skipButton: <span class="type">UIButton</span>!</div><div class="line">    <span class="meta">@IBOutlet</span> <span class="keyword">var</span> topView: <span class="type">UIView</span>!</div><div class="line">    <span class="meta">@IBOutlet</span> <span class="keyword">var</span> bottomView: <span class="type">UIView</span>!</div><div class="line">    </div><div class="line">    <span class="keyword">var</span> cameraLayer: <span class="type">CALayer</span>!</div><div class="line">    <span class="keyword">var</span> gameTimer: <span class="type">Timer</span>!</div><div class="line">    <span class="keyword">var</span> timeRemaining = <span class="number">60</span></div><div class="line">    <span class="keyword">var</span> currentScore = <span class="number">0</span></div><div class="line">    <span class="keyword">var</span> highScore = <span class="number">0</span></div><div class="line">    </div><div class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">func</span> <span class="title">viewDidLoad</span><span class="params">()</span></span> &#123;</div><div class="line">        <span class="keyword">super</span>.viewDidLoad()</div><div class="line">        </div><div class="line">        viewSetup()</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">func</span> <span class="title">viewSetup</span><span class="params">()</span></span> &#123;</div><div class="line">        <span class="keyword">let</span> backgroundColor = <span class="type">UIColor</span>(red: <span class="number">255</span>/<span class="number">255</span>, green: <span class="number">255</span>/<span class="number">255</span>, blue: <span class="number">255</span>/<span class="number">255</span>, alpha: <span class="number">0.8</span>)</div><div class="line">        topView.backgroundColor = backgroundColor</div><div class="line">        bottomView.backgroundColor = backgroundColor</div><div class="line">        scoreLabel.text = <span class="string">"0"</span></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">func</span> <span class="title">didReceiveMemoryWarning</span><span class="params">()</span></span> &#123;</div><div class="line">        <span class="keyword">super</span>.didReceiveMemoryWarning()</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure> &nbsp;</p>
+<h2 id="创建摄像头"><a href="#创建摄像头" class="headerlink" title="创建摄像头"></a>创建摄像头</h2><p>现在我们来创建实时视频采集窗口，它将占用整个背景视图。在我们添加代码前，需要向用户申请访问摄像头的权限，iOS 会完成大部分的工作，我们所要做的只是描述下使用摄像头的原因。</p>
+<p>在导航面板中找到 <code>Info.plist</code> 文件并添加一行条目，其键为 <em>Privacy – Camera Usage Description</em>，值为描述文字。</p>
+<p><img src="/2017/07/13/translation-corelm-game/images/image-7.png" alt="images/image-7.png" title=""> &nbsp;</p>
+<p>下面来添加代码，我们把设置摄像头的准备工作放到一个叫 <code>cameraSetup</code> 的方法中。</p>
+<p>把这段代码加在 <code>viewDidLoad</code> 方法中的 <code>viewSetup</code> 方法下面：</p>
+<p><figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">cameraSetup()</div></pre></td></tr></table></figure> &nbsp;</p>
+<p>然后，在 <code>viewDidLoad</code> 方法后面添加 <code>cameraSetup</code> 方法的定义：</p>
+<p><figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">cameraSetup</span><span class="params">()</span></span> &#123;</div><div class="line">    </div><div class="line">&#125;</div></pre></td></tr></table></figure> &nbsp;</p>
+<p>现在，我们来创建 <code>AVCaptureSession</code>，通过它，我们就可以进行实时视频扑捉了。把下面的方法添加到 <code>cameraSetup</code> 方法中：</p>
+<p><figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">let</span> captureSession = <span class="type">AVCaptureSession</span>()</div><div class="line">captureSession.sessionPreset = <span class="type">AVCaptureSession</span>.<span class="type">Preset</span>.photo</div><div class="line"><span class="keyword">let</span> backCamera = <span class="type">AVCaptureDevice</span>.<span class="keyword">default</span>(.builtInWideAngleCamera, <span class="keyword">for</span>: .video, position: .back)!</div><div class="line"><span class="keyword">let</span> input = <span class="keyword">try</span>! <span class="type">AVCaptureDeviceInput</span>(device: backCamera)</div><div class="line">captureSession.addInput(input)</div></pre></td></tr></table></figure> &nbsp;</p>
+<p>这里究竟发生了什么？<br><strong>第 1 行：</strong>我们创建了一个 <code>AVCaptureSession</code> 类型的常量。<br><strong>第 2 行：</strong>为保证输出品质，我们使用预设值的选项，将其设置为照片格式，这样就能使其达到更高的分辨率。<br><strong>第 3 行：</strong>我们采用后置摄像头创建了一个 <code>AVCaptureDevie</code>，这里，我们根本没理由使用前置摄像头。<br><strong>第 4 行：</strong>我们使用刚刚创建的 <code>AVCaptureDevice</code> 创建了一个 <code>AVCaptureDeviceInput</code> 对象。<br><strong>第 5 行：</strong>我们将 backCamera 作为 captureSession 的输入。</p>
+<p>还记得我们之前创建的 <code>cameraLayer</code> 参数吗？马上我们就要用到它了，把 <code>cameraLayer</code> 作为主视图的一个子层，并设置它的大小与主视图相同。</p>
+<p>将下面的代码添加到我们刚刚设置 <code>captureSession</code> 的那部分代码后：</p>
+<p><figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">cameraLayer = <span class="type">AVCaptureVideoPreviewLayer</span>(session: captureSession)</div><div class="line">view.layer.addSublayer(cameraLayer)</div><div class="line">cameraLayer.frame = view.bounds</div><div class="line"> </div><div class="line">view.bringSubview(toFront: topView)</div><div class="line">view.bringSubview(toFront: bottomView)</div></pre></td></tr></table></figure> &nbsp;</p>
+<p><strong>第 1-3 行：</strong>初始化一个 <code>AVCaptureVideoPreviewLayer</code> 类型的对象，并赋值给 <code>cameraLayer</code>，将 <code>captureSession</code> 作为构造方法的参数。然后，我们将 <code>cameraLayer</code> 作为子层添加到主视图的层中，并设置其大小为主视图的大小。<br><strong>第 5-6 行：</strong>这里，我们将上方和下方的两个视图，从视图体系中上前移动，这样，<code>cameraLayer</code> 就不会遮盖住它们。</p>
+<p>在我们刚刚添加的代码后面，添加如下代码，这样就完成了这个方法：</p>
+<p><figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">let</span> videoOutput = <span class="type">AVCaptureVideoDataOutput</span>()</div><div class="line">videoOutput.setSampleBufferDelegate(<span class="keyword">self</span>, queue: <span class="type">DispatchQueue</span>(label: <span class="string">"buffer delegate"</span>))</div><div class="line">videoOutput.recommendedVideoSettings(forVideoCodecType: .jpeg, assetWriterOutputFileType: .mp4)</div><div class="line"> </div><div class="line">captureSession.addOutput(videoOutput)</div><div class="line">captureSession.sessionPreset = .high</div><div class="line">captureSession.startRunning()</div></pre></td></tr></table></figure> &nbsp;</p>
+<p><strong>第 1-3 行：</strong>创建数据输出对象，并设置输出参数。此时，你会发现一些编译错误，不用担心，稍候我们就会解决它。<br><strong>第 5-7 行：</strong>最后，我们将数据输出对象添加到 <code>captureSession</code> 中，并启动它。</p>
+<p><code>cameraSetup</code> 方法现在看起来应该是这个样子：</p>
+<p><figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">cameraSetup</span><span class="params">()</span></span> &#123;</div><div class="line">    <span class="keyword">let</span> captureSession = <span class="type">AVCaptureSession</span>()</div><div class="line">    captureSession.sessionPreset = <span class="type">AVCaptureSession</span>.<span class="type">Preset</span>.photo</div><div class="line">    <span class="keyword">let</span> backCamera = <span class="type">AVCaptureDevice</span>.<span class="keyword">default</span>(.builtInWideAngleCamera, <span class="keyword">for</span>: .video, position: .back)!</div><div class="line">    <span class="keyword">let</span> input = <span class="keyword">try</span>! <span class="type">AVCaptureDeviceInput</span>(device: backCamera)</div><div class="line">    captureSession.addInput(input)</div><div class="line">    </div><div class="line">    cameraLayer = <span class="type">AVCaptureVideoPreviewLayer</span>(session: captureSession)</div><div class="line">    view.layer.addSublayer(cameraLayer)</div><div class="line">    cameraLayer.frame = view.bounds</div><div class="line">    </div><div class="line">    view.bringSubview(toFront: topView)</div><div class="line">    view.bringSubview(toFront: bottomView)</div><div class="line">    </div><div class="line">    <span class="keyword">let</span> videoOutput = <span class="type">AVCaptureVideoDataOutput</span>()</div><div class="line">    videoOutput.setSampleBufferDelegate(<span class="keyword">self</span>, queue: <span class="type">DispatchQueue</span>(label: <span class="string">"buffer delegate"</span>))</div><div class="line">    videoOutput.recommendedVideoSettings(forVideoCodecType: .jpeg, assetWriterOutputFileType: .mp4)</div><div class="line">    </div><div class="line">    captureSession.addOutput(videoOutput)</div><div class="line">    captureSession.sessionPreset = .high</div><div class="line">    captureSession.startRunning()</div><div class="line">&#125;</div></pre></td></tr></table></figure> &nbsp;</p>
+<h2 id="添加-Core-ML-数据模型"><a href="#添加-Core-ML-数据模型" class="headerlink" title="添加 Core ML 数据模型"></a>添加 Core ML 数据模型</h2><p>完成了 UI 和摄像头的设置，是时候来编写使用 Core ML 进行物体识别的代码了。</p>
+<p>在编码前，我们需要将 Core ML 数据模型添加到工程中，为了使用 Core ML，你需要一个预处理的数据模型，虽然可以为这个游戏建立自己的数据模型，但我们还是决定使用苹果开发者网站中所提供的。</p>
+<p>访问<strong><a href="https://developer.apple.com/machine-learning/" target="_blank" rel="external">苹果开发者网站中关于机器学习的页面</a></strong>，滚动到页面下方，你会发现 4 种不同的预处理数据模型可供下载。</p>
+<p><img src="/2017/07/13/translation-corelm-game/images/image-8.png" alt="images/image-8.png" title=""> &nbsp;</p>
+<p><div class="note warning"><p><span style="color: #EEAC57;"><strong>译者注：</strong>在翻译该文时，苹果官网中所提供的数据模型已增加到 5 种。</span> </p>
+</div> &nbsp;</p>
+<p>在这个游戏中，我们使用 <em>Inception v3</em> 模型，下载完毕后，将其拖拽至工程的导航面板中，点击数据模型文件，看看它都显示了什么。</p>
+<p><img src="/2017/07/13/translation-corelm-game/images/image-8.png" alt="images/image-8.png" title=""> &nbsp;</p>
+<p><div class="note default"><p><strong>提示：</strong>保证数据模型的 Target Membership 处勾选了当前工程，否则应用将无法访问该文件。</p>
+</div> &nbsp;</p>
+<p>你会发现，这个数据模型有一个神经网络分类器，它将尺寸为 <code>299x299</code> 的图片作为输入，并输出两部分内容：一个表示所识别品类的可能性的字典，和一个表示所识别品类的字符串信息。</p>
+<h2 id="识别物体"><a href="#识别物体" class="headerlink" title="识别物体"></a>识别物体</h2><p>我们的短途旅行结束了，下面我们继续回到 <code>View Controller</code> 中，并添加两个神奇的方法。</p>
+<p>首先添加 <code>predict</code> 方法，把如下代码添加到 <code>cameraSetup</code> 方法下方：</p>
+<p><figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">predict</span><span class="params">(image: CGImage)</span></span> &#123;</div><div class="line">    <span class="keyword">let</span> model = <span class="keyword">try</span>! <span class="type">VNCoreMLModel</span>(<span class="keyword">for</span>: <span class="type">Inceptionv3</span>().model)</div><div class="line">    <span class="keyword">let</span> request = <span class="type">VNCoreMLRequest</span>(model: model, completionHandler: results)</div><div class="line">    <span class="keyword">let</span> handler = <span class="type">VNSequenceRequestHandler</span>()</div><div class="line">    <span class="keyword">try</span>! handler.perform([request], on: image)</div><div class="line">&#125;</div></pre></td></tr></table></figure> &nbsp;</p>
+<p>不要被它的代码行数骗了，它可是一个相当给力的方法：</p>
+<p><strong>第 2 行：</strong>创建一个 Inception v3 类型的常量。<br><strong>第 3 行：</strong>创建一个 <code>VNCoreMLRequest</code> 类型的对象，这个对象会在请求完成时调用结果处理方法（稍候我们就会实现它，所以不要在意那些编译错误）。<br><strong>第 4-5 行：</strong>创建一个 <code>VNCoreMLRequestHandler</code> 类型的对象并调用它，而 <code>predict</code> 方法的输入参数 <code>image</code> 也将作为 <code>perform</code> 方法的参数被传递进去。</p>
+<p>下面，我们来实现 <code>results</code> 方法，通过它，我们来处理 <code>predict</code> 方法的处理结果，并使程序正常运行。</p>
+<p>将下面的代码添加到 <code>predict</code> 方法下方：</p>
+<p><figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">results</span><span class="params">(request: VNRequest, error: Error?)</span></span> &#123;</div><div class="line">    <span class="keyword">guard</span> <span class="keyword">let</span> results = request.results <span class="keyword">as</span>? [<span class="type">VNClassificationObservation</span>] <span class="keyword">else</span> &#123;</div><div class="line">        <span class="built_in">print</span>(<span class="string">"No result found"</span>)</div><div class="line">        <span class="keyword">return</span></div><div class="line">    &#125;</div><div class="line">        </div><div class="line">    <span class="keyword">guard</span> results.<span class="built_in">count</span> != <span class="number">0</span> <span class="keyword">else</span> &#123;</div><div class="line">        <span class="built_in">print</span>(<span class="string">"No result found"</span>)</div><div class="line">        <span class="keyword">return</span></div><div class="line">    &#125;</div><div class="line">        </div><div class="line">    <span class="keyword">let</span> highestConfidenceResult = results.first!</div><div class="line">    <span class="keyword">let</span> identifier = highestConfidenceResult.identifier.<span class="built_in">contains</span>(<span class="string">", "</span>) ? <span class="type">String</span>(describing: highestConfidenceResult.identifier.<span class="built_in">split</span>(separator: <span class="string">","</span>).first!) : highestConfidenceResult.identifier</div><div class="line">        </div><div class="line">    <span class="keyword">if</span> identifier == objectLabel.text! &#123;</div><div class="line">        currentScore += <span class="number">1</span></div><div class="line">        <span class="comment">//nextObject()</span></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure> &nbsp;</p>
+<p>这个方法会在物体识别完成后调用。首先使用两个 <code>guard</code> 语句保证结果的存在性，如果结果存在，则把可信度最高的结果转换成字符串，并赋值给 <code>identifier</code> 常量。然后，程序会比对结果字符串与目标物体标签中显示的内容，如果相同，就意味着玩家找到了正确的物体，分数也会随之增加。另外，你会发现一个被注释掉的方法 <code>nextObject()</code>，我们暂时还没实现它。</p>
+<p>好了，我们已经完成了这个游戏的主要工作！是不是很简单？你的 <code>predict</code> 方法和 <code>results</code> 方法看起来应该是这样的：</p>
+<p><figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">predict</span><span class="params">(image: CGImage)</span></span> &#123;</div><div class="line">    <span class="keyword">let</span> model = <span class="keyword">try</span>! <span class="type">VNCoreMLModel</span>(<span class="keyword">for</span>: <span class="type">Inceptionv3</span>().model)</div><div class="line">    <span class="keyword">let</span> request = <span class="type">VNCoreMLRequest</span>(model: model, completionHandler: results)</div><div class="line">    <span class="keyword">let</span> handler = <span class="type">VNSequenceRequestHandler</span>()</div><div class="line">    <span class="keyword">try</span>! handler.perform([request], on: image)</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">results</span><span class="params">(request: VNRequest, error: Error?)</span></span> &#123;</div><div class="line">    <span class="keyword">guard</span> <span class="keyword">let</span> results = request.results <span class="keyword">as</span>? [<span class="type">VNClassificationObservation</span>] <span class="keyword">else</span> &#123;</div><div class="line">        <span class="built_in">print</span>(<span class="string">"No result found"</span>)</div><div class="line">        <span class="keyword">return</span></div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">guard</span> results.<span class="built_in">count</span> != <span class="number">0</span> <span class="keyword">else</span> &#123;</div><div class="line">        <span class="built_in">print</span>(<span class="string">"No result found"</span>)</div><div class="line">        <span class="keyword">return</span></div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">let</span> highestConfidenceResult = results.first!</div><div class="line">    <span class="keyword">let</span> identifier = highestConfidenceResult.identifier.<span class="built_in">contains</span>(<span class="string">", "</span>)</div><div class="line">        ? <span class="type">String</span>(describing: highestConfidenceResult.identifier.<span class="built_in">split</span>(separator: <span class="string">","</span>).first!)</div><div class="line">        : highestConfidenceResult.identifier</div><div class="line">    </div><div class="line">    <span class="keyword">if</span> identifier == objectLabel.text! &#123;</div><div class="line">        currentScore += <span class="number">1</span></div><div class="line">        <span class="comment">//nextObject()</span></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure> &nbsp;</p>
+<p>在完成这个游戏前，我们还有一件事要做，我们需要为 <code>ViewController</code> 添加扩展，来调用 <code>predict</code> 方法。将下面的代码添加到 <code>ViewController.swift</code> 文件的最底部：</p>
+<p><figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">extension</span> <span class="title">ViewController</span>: <span class="title">AVCaptureVideoDataOutputSampleBufferDelegate</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">func</span> <span class="title">captureOutput</span><span class="params">(<span class="number">_</span> output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection)</span></span> &#123;</div><div class="line">        <span class="keyword">guard</span> <span class="keyword">let</span> pixelBuffer = <span class="type">CMSampleBufferGetImageBuffer</span>(sampleBuffer) <span class="keyword">else</span> &#123; <span class="built_in">fatalError</span>(<span class="string">"pixel buffer is nil"</span>) &#125;</div><div class="line">        <span class="keyword">let</span> ciImage = <span class="type">CIImage</span>(cvPixelBuffer: pixelBuffer)</div><div class="line">        <span class="keyword">let</span> context = <span class="type">CIContext</span>(options: <span class="literal">nil</span>)</div><div class="line">        </div><div class="line">        <span class="keyword">guard</span> <span class="keyword">let</span> cgImage = context.createCGImage(ciImage, from: ciImage.extent) <span class="keyword">else</span> &#123; <span class="built_in">fatalError</span>(<span class="string">"cg image"</span>) &#125;</div><div class="line">        <span class="keyword">let</span> uiImage = <span class="type">UIImage</span>(cgImage: cgImage, scale: <span class="number">1.0</span>, orientation: .leftMirrored)</div><div class="line">        </div><div class="line">        <span class="type">DispatchQueue</span>.main.sync &#123;</div><div class="line">            predict(image: uiImage.cgImage!)</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure> &nbsp;</p>
+<p>这段扩展代码使 <code>ViewController</code> 适配 <code>AVCaptureVideoDataOutputSampleBufferDelegate</code> 协议，从而处理捕捉到的视频缓冲，并根据视频内容创建图像对象。我们把图像作为参数，传递给 <code>predict</code> 方法。现在，你可以正常编译你的代码了。这就是我们如何通过不断采集视频，并传递给内置的机器学习数据模型，来达到物体识别功能的全过程。</p>
+<h2 id="为游戏预制物体数组"><a href="#为游戏预制物体数组" class="headerlink" title="为游戏预制物体数组"></a>为游戏预制物体数组</h2><p>为了让游戏能够随机显示目标物体，我们准备了一个待选物体列表。我们创建了一个列表，来保存一批待选物体的名称，随后，我们会创建一个方法来随机选择物体，并告知玩家目标物体是什么。</p>
+<p>这是一个有点长的数组，处于代码结构性的考虑，我把它放到了一个单独的 Swift 文件中，在导航面板中点击右键，并选择 <code>New File...</code>。</p>
+<p>选择 Swift 文件类型并点击下一步按钮，将其命名为 “Objects”，将如下代码片段添加到刚刚创建的文件中：</p>
+<p><figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Objects</span> </span>&#123;</div><div class="line">    <span class="keyword">let</span> objectArray = [<span class="string">"computer keyboard"</span>, <span class="string">"mouse"</span>, <span class="string">"iPod"</span>, <span class="string">"printer"</span>, <span class="string">"digital clock"</span>, <span class="string">"digital watch"</span>, <span class="string">"backpack"</span>, <span class="string">"ping-pong ball"</span>, <span class="string">"envelope"</span>, <span class="string">"water bottle"</span>, <span class="string">"combination lock"</span>, <span class="string">"lampshade"</span>, <span class="string">"switch"</span>, <span class="string">"lighter"</span>, <span class="string">"pillow"</span>, <span class="string">"spider web"</span>, <span class="string">"sandal"</span>, <span class="string">"vacuum"</span>, <span class="string">"wall clock"</span>, <span class="string">"bath towel"</span>, <span class="string">"wallet"</span>, <span class="string">"poster"</span>, <span class="string">"chocolate"</span>]</div><div class="line">&#125;</div></pre></td></tr></table></figure> &nbsp;</p>
+<p>我们创建了一个名为 <code>objectArray</code> 的数组对象，它包含了可随机选择的常用日用品，以供 Core ML 进行查找。当然，你可以任意增减这些选项。</p>
+<p>在进行下一步之前，让我们先回到 <code>ViewController.swift</code> 文件。</p>
+<h2 id="保存记录"><a href="#保存记录" class="headerlink" title="保存记录"></a>保存记录</h2><p>我们会使用 <code>UserDefaults</code> 保存用户的最高记录，这就意味着，我们需要一个 setter 把最高纪录保存到 <code>UserDefaults</code> 中，还需要一个 getter 方法去获得最高记录的值。</p>
+<p>将下面两个方法添加到 <code>results</code> 方法的下方：</p>
+<p><figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">getHighScore</span><span class="params">()</span></span> &#123;</div><div class="line">    <span class="keyword">if</span> <span class="keyword">let</span> score = <span class="type">UserDefaults</span>.standard.object(forKey: <span class="string">"highscore"</span>) &#123;</div><div class="line">        highscoreLabel.text = <span class="string">"<span class="subst">\(score)</span>"</span></div><div class="line">        highScore = score <span class="keyword">as</span>! <span class="type">Int</span></div><div class="line">    &#125;</div><div class="line">    <span class="keyword">else</span> &#123;</div><div class="line">        <span class="built_in">print</span>(<span class="string">"No highscore, setting to 0."</span>)</div><div class="line">        highscoreLabel.text = <span class="string">"0"</span></div><div class="line">        highScore = <span class="number">0</span></div><div class="line">        setHighScore(score: <span class="number">0</span>)</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line">    </div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">setHighScore</span><span class="params">(score: Int)</span></span> &#123;</div><div class="line">    <span class="type">UserDefaults</span>.standard.<span class="keyword">set</span>(score, forKey: <span class="string">"highscore"</span>)</div><div class="line">&#125;</div></pre></td></tr></table></figure> &nbsp;</p>
+<p><code>getHighScore</code> 方法使用 <code>if let</code> 语句检查 <code>UserDefaults</code> 中是否存在被保存的最高记录，就把它赋值给 <code>highScore</code> 变量，如果不存在，则将 <code>highScore</code> 变量的值设为 0。<code>setHighScore</code> 只是把当前的记录设置为最高记录，当玩家刷新了最高记录后，我们将会调用它。</p>
+<p>当应用启动时，我们需要调用 <code>getHighScore</code> 方法，这样，在打开应用后，玩家就能看到最高记录是多少。</p>
+<p>将 <code>getHighScore</code> 方法添加到 <code>viewDidLoad</code> 方法中 <code>cameraSetup</code> 方法的后面。你的 <code>viewDidLoad</code> 方法看起来应该是这样的：</p>
+<p><figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">override</span> <span class="function"><span class="keyword">func</span> <span class="title">viewDidLoad</span><span class="params">()</span></span> &#123;</div><div class="line">    <span class="keyword">super</span>.viewDidLoad()</div><div class="line">    </div><div class="line">    viewSetup()</div><div class="line">    cameraSetup()</div><div class="line">    getHighScore()</div><div class="line">&#125;</div></pre></td></tr></table></figure> &nbsp;</p>
+<h2 id="处理游戏的运行"><a href="#处理游戏的运行" class="headerlink" title="处理游戏的运行"></a>处理游戏的运行</h2><p>现在，我们来让之前完成的那些方法协同工作，这样就能使游戏运行起来了。我们会通过在物品数组里随机挑选一件物品来启动游戏，还要处理游戏何时结束。</p>
+<p>将下面的代码添加到 <code>setHighScore</code> 方法下面：</p>
+<p><figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//1</span></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">endGame</span><span class="params">()</span></span> &#123;</div><div class="line">    <span class="comment">//2</span></div><div class="line">    startButton.isHidden = <span class="literal">false</span></div><div class="line">    skipButton.isHidden = <span class="literal">true</span></div><div class="line">    objectLabel.text = <span class="string">"Game Over"</span></div><div class="line">    <span class="comment">//3</span></div><div class="line">    <span class="keyword">if</span> currentScore &gt; highScore &#123;</div><div class="line">        setHighScore(score: currentScore)</div><div class="line">        highscoreLabel.text = <span class="string">"<span class="subst">\(currentScore)</span>"</span></div><div class="line">    &#125;</div><div class="line">    <span class="comment">//4</span></div><div class="line">    currentScore = <span class="number">0</span></div><div class="line">    timeRemaining = <span class="number">60</span></div><div class="line">    </div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">//5</span></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">nextObject</span><span class="params">()</span></span> &#123;</div><div class="line">    <span class="comment">//6</span></div><div class="line">    <span class="keyword">let</span> allObjects = <span class="type">Objects</span>().objectArray</div><div class="line">    <span class="comment">//7</span></div><div class="line">    <span class="keyword">let</span> randomObjectIndex = <span class="type">Int</span>(arc4random_uniform(<span class="type">UInt32</span>(allObjects.<span class="built_in">count</span>)))</div><div class="line">    <span class="comment">//8</span></div><div class="line">    <span class="keyword">guard</span> allObjects[randomObjectIndex] != objectLabel.text <span class="keyword">else</span> &#123;</div><div class="line">        nextObject()</div><div class="line">        <span class="keyword">return</span></div><div class="line">    &#125;</div><div class="line">    <span class="comment">//9</span></div><div class="line">    objectLabel.text = allObjects[randomObjectIndex]</div><div class="line">    scoreLabel.text = <span class="string">"<span class="subst">\(currentScore)</span>"</span></div><div class="line">&#125;</div></pre></td></tr></table></figure> &nbsp;</p>
+<p>你会问，这些方法都做了些什么？</p>
+<ol>
+<li>当游戏时间结束时，我们会调用 <code>endGame</code> 方法。</li>
+<li>首先，我们显示 start 按钮，并隐藏 skip 按钮，因为游戏在非进行状态下是不需要 skip 按钮的，另外，我们还要设置 object 标签的文本为 “Game Over”。</li>
+<li>我们要检查下玩家的记录是不是超过了最高记录，如果超过了，就调用 <code>setHighScore</code> 方法。</li>
+<li>为下一局游戏重置所有变量的值。</li>
+<li>当玩家找到了正确的物品，或者点击了 <code>skip</code> 按钮，则调用 <code>nextObject</code> 方法，这个方法会从物品数组中随机挑选物品，并显示在 object 标签上，这样，玩家就知道该去寻找什么了。</li>
+<li>创建 <code>objectArray</code> 变量。</li>
+<li>生成一个随机数用于定位数组中的元素，该随机数的选取范围为 0 到 <code>objectArray</code> 数组长度之间的值。</li>
+<li>使用 <code>guard</code> 语句来保证本次所选的物品与上一次的物品不同，这样就能避免玩家连续找两件同样的物品了。</li>
+<li>将 object 标签的值设置为本次所选物品的值，另外还要将 score 标签的值设置成正确的值。</li>
+</ol>
+<p><div class="note default"><p><strong>提示：</strong>现在，我们已经实现了 <code>nextObject</code> 方法，请记得将 <code>results</code> 方法中的的注释去掉，还有其他使用到 <code>nextObject</code> 方法的地方。</p>
+</div> &nbsp;</p>
+<p>下面，我们来创建两个 action 方法，并把它们与 start 和 skip 按钮关联起来。在 <code>nextObject</code> 方法的下面添加如下代码：</p>
+<p><figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@IBAction</span> <span class="function"><span class="keyword">func</span> <span class="title">startButtonTapped</span><span class="params">()</span></span> &#123;</div><div class="line">    <span class="comment">//1</span></div><div class="line">    gameTimer = <span class="type">Timer</span>.scheduledTimer(withTimeInterval: <span class="number">1</span>, repeats: <span class="literal">true</span>, block: &#123; (gameTimer) <span class="keyword">in</span></div><div class="line">        <span class="comment">//2</span></div><div class="line">        <span class="keyword">guard</span> <span class="keyword">self</span>.timeRemaining != <span class="number">0</span> <span class="keyword">else</span> &#123;</div><div class="line">            gameTimer.invalidate()</div><div class="line">            <span class="keyword">self</span>.endGame()</div><div class="line">            <span class="keyword">return</span></div><div class="line">        &#125;</div><div class="line">            </div><div class="line">        <span class="keyword">self</span>.timeRemaining -= <span class="number">1</span></div><div class="line">        <span class="keyword">self</span>.timerLabel.text = <span class="string">"<span class="subst">\(<span class="keyword">self</span>.timeRemaining)</span>"</span></div><div class="line">    &#125;)</div><div class="line">    <span class="comment">//3  </span></div><div class="line">    startButton.isHidden = <span class="literal">true</span></div><div class="line">    skipButton.isHidden = <span class="literal">false</span></div><div class="line">    nextObject()</div><div class="line">        </div><div class="line">&#125;</div><div class="line"> </div><div class="line"><span class="comment">//4  </span></div><div class="line"><span class="meta">@IBAction</span> <span class="function"><span class="keyword">func</span> <span class="title">skipButtonTapped</span><span class="params">()</span></span> &#123;</div><div class="line">    nextObject()</div><div class="line">&#125;</div></pre></td></tr></table></figure> &nbsp;</p>
+<p>我们在这都做了些什么？</p>
+<ol>
+<li>首先我们添加了一个 action，当玩家点击 start 按钮时就会调用它。我们初始化了一个计时器，并赋值给 gameTimer 功能。我们使用代码块作为计时器的事件处理逻辑，当然也可以使用 selector，但这样会使代码看起来更整洁。</li>
+<li>我们使用 <code>guard</code> 语句，来确保游戏时间尚有剩余，如果游戏剩余时间为 0，则使 gameTimer 失效，并调用 <code>endGame</code> 方法，如果游戏时间还有剩余，则将 <code>timeRemaining</code> 属性的值减 1，并更新 <code>timerLabel</code> 显示的信息。</li>
+<li>隐藏 <code>start</code> 按钮并显示 <code>skip</code> 按钮，调用 <code>nextObject</code> 方法来显示第一个目标物体。</li>
+<li>我们为 <code>skip</code> 按钮添加了一个 <code>action</code>，它的功能仅仅是调用 <code>nextObject</code> 方法。</li>
+</ol>
+<p><div class="note default"><p><strong>提示：</strong>请确保你已经 action 和 outlet 与 <code>Main.storyboard</code> 中的 UI 组件关联完毕。 </p>
+</div> &nbsp;</p>
+<h2 id="运行游戏"><a href="#运行游戏" class="headerlink" title="运行游戏"></a>运行游戏</h2><p>终于到了运行游戏的时间了，编译并启动应用。点击 start 按钮并对准目标物体，看看你能得多少分！在定位和识别物体时，你可能要等几秒钟，另外，如果你是在老设备上运行游戏，比如 iPhone 5s、iPhone 6，由于机能限制，程序的运行速度会很慢，我发现运行在 iPhone 7 上效果就会很不错，但运行在 iPhone 5s 上就会慢得要死……</p>
+<p><img src="/2017/07/13/translation-corelm-game/images/image-10.png" alt="images/image-10.png" title=""> &nbsp;</p>
+<p><em>如你所料，它认不出任天堂 Switch 游戏机！</em></p>
+<p><div class="note warning"><p><span style="color: #EEAC57;"><strong>译者注：</strong>此处，作者是在搞笑，目标物体实际上是开关……</span> </p>
+</div> &nbsp;</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>愿你在创建游戏的过程中心情愉快，同样，也希望你对 Core ML 有了更多的了解。这个游戏并不是那么完美，有很多地方有待你去改进（比如在找寻到目标物体后播放音效），这仅仅是为了演示如何使用 Core ML 的一个小程序，你可以在它的基础上尽情发挥想象力。</p>
+<p>你可以在<strong><a href="https://github.com/appcoda/CoreMLScavenge" target="_blank" rel="external">GitHub</a></strong>下载本教程的完整代码。</p>
+<p>更多关于 Core ML 框架的细节，可以访问<strong><a href="https://developer.apple.com/documentation/coreml" target="_blank" rel="external">关于 Core ML 的官方文档</a></strong>。</p>
+<p>如你喜欢这篇教程，欢迎留言给我。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/07/12/translation-coreml-introduction/" rel="next" title="Core ML 初体验：构建简单的图像识别应用">
+                <i class="fa fa-chevron-left"></i> Core ML 初体验：构建简单的图像识别应用
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8yOTI5OS81ODY3"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="https://avatars3.githubusercontent.com/u/1787383?v=3&u=63a1e261c730210a371bbbd265f7a91727ca22b3&s=400"
+               alt="Stoner" />
+          <p class="site-author-name" itemprop="name">Stoner</p>
+           
+              <p class="site-description motion-element" itemprop="description">蜗壳，沉重却是生命的归宿；<br>脚步，缓慢但从未止步不前。</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">4</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/stoner30" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#应用概述"><span class="nav-number">1.</span> <span class="nav-text">应用概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#创建工程"><span class="nav-number">2.</span> <span class="nav-text">创建工程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#创建用户界面"><span class="nav-number">3.</span> <span class="nav-text">创建用户界面</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#创建视图"><span class="nav-number">4.</span> <span class="nav-text">创建视图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#创建摄像头"><span class="nav-number">5.</span> <span class="nav-text">创建摄像头</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#添加-Core-ML-数据模型"><span class="nav-number">6.</span> <span class="nav-text">添加 Core ML 数据模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#识别物体"><span class="nav-number">7.</span> <span class="nav-text">识别物体</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#为游戏预制物体数组"><span class="nav-number">8.</span> <span class="nav-text">为游戏预制物体数组</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#保存记录"><span class="nav-number">9.</span> <span class="nav-text">保存记录</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#处理游戏的运行"><span class="nav-number">10.</span> <span class="nav-text">处理游戏的运行</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#运行游戏"><span class="nav-number">11.</span> <span class="nav-text">运行游戏</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">12.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Stoner</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+    <script type="text/javascript">
+      (function(d, s) {
+        var j, e = d.getElementsByTagName(s)[0];
+        if (typeof LivereTower === 'function') { return; }
+        j = d.createElement(s);
+        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+        j.async = true;
+        e.parentNode.insertBefore(j, e);
+      })(document, 'script');
+    </script>
+  
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
